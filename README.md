@@ -1,6 +1,6 @@
 # 🌍 Country Info Buddy
 
-A modern **Full-Stack Application** built with **FastAPI** and **React** to fetch and display country information dynamically using a **GraphQL API**. This application demonstrates advanced backend development in Python and a clean, responsive frontend.
+A modern **Full-Stack Application** built with **FastAPI** and **React** to fetch and display country information dynamically using a **GraphQL API**.
 
 ---
 
