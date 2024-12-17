@@ -98,28 +98,33 @@ This project demonstrates advanced engineering concepts such as:
 ```bash
 git clone https://github.com/your-username/country-info-buddy.git
 cd country-info-buddy
+```
 
 2. Backend Setup (FastAPI)
 
 a. Install Dependencies
 
+```bash
 cd server
 python3 -m venv venv
 source venv/bin/activate
 pip install -r requirements.txt
-
+```
 b. Start Redis (Required for Caching)
 	•	macOS/Linux:
 
+```bash
 brew install redis
 brew services start redis
+```
 
-
-	•	Windows: Install Redis via MS Open Tech.
+•	Windows: Install Redis via MS Open Tech.
 
 c. Run the Backend
 
+```bash
 uvicorn main:app --reload
+```
 
 The backend runs at: http://127.0.0.1:8000
 
@@ -127,13 +132,16 @@ The backend runs at: http://127.0.0.1:8000
 
 a. Install Dependencies
 
+```bash
 cd client
 npm install
 
+```
 b. Start the Frontend
 
+```bash
 npm run dev
-
+```
 The frontend runs at: http://localhost:5173
 
 📑 Backend API Documentation
@@ -171,15 +179,19 @@ Backend Tests
 
 Run Pytest to validate the API routes:
 
+```bash
 cd server
 pytest tests/test_routes.py
+```
 
 Frontend Tests
 
 Run React Testing Library tests:
 
+```bash
 cd client
 npm test
+```
 
 🎯 Possible Improvements
 	•	Add pagination for large GraphQL responses.
