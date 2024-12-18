@@ -6,7 +6,7 @@ import json
 router = APIRouter()
 
 # GraphQL query builder
-def get_countryside_query(country_code: str):
+def get_countryinfo_query(country_code: str):
     return f"""
     query {{
         country(code: "{country_code}") {{
@@ -26,8 +26,8 @@ def get_countryside_query(country_code: str):
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
-@router.post("/api/countryside")
-async def countryside_endpoint(request: Request):
+@router.post("/api/countryinfo")
+async def countryinfo_endpoint(request: Request):
     try:
         body = await request.json()
         country_code = body.get("countryCode")
@@ -35,7 +35,7 @@ async def countryside_endpoint(request: Request):
         if not country_code:
             raise HTTPException(status_code=400, detail="countryCode is required")
 
-        graphql_query = get_countryside_query(country_code)
+        graphql_query = get_countryinfo_query(country_code)
         logger.info(f"Executing query for country: {country_code}")
         response = execute_graphql_query(graphql_query)
 

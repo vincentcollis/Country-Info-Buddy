@@ -36,7 +36,7 @@ export default function CountryForm(props) {
 			try {
 				console.log(`Fetching data for country code: ${countryCode}...`);
 
-				const response = await fetch('http://127.0.0.1:8000/api/countryside', {
+				const response = await fetch('http://127.0.0.1:8000/api/countryinfo', {
 					method: 'POST',
 					headers: { 'Content-Type': 'application/json' },
 					body: JSON.stringify({ countryCode }),
