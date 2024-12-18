@@ -10,13 +10,18 @@ import {
 	FormItem,
 	FormMessage,
 } from '@/components/ui/form';
+import { Checkbox } from '@/components/ui/checkbox'; // Assuming you have a Checkbox component
 
+// Extend the schema to include currency and languages as booleans
 const formSchema = z.object({
 	countryCode: z
 		.string()
+		.toUpperCase()
 		.min(2, { message: 'Name must be at least 2 characters.' })
-		.max(3, { message: 'Name must not exceed 3 characters.' }) // Max 3 characters
-		.regex(/^[A-Za-z]+$/, { message: 'Only letters are allowed.' }), // Letters only
+		.max(3, { message: 'Name must not exceed 3 characters.' })
+		.regex(/^[A-Za-z]+$/, { message: 'Only letters are allowed.' }),
+	currency: z.boolean(),
+	languages: z.boolean(),
 });
 
 export default function CountryForm(props) {
@@ -24,48 +29,56 @@ export default function CountryForm(props) {
 
 	const form = useForm({
 		resolver: zodResolver(formSchema),
-		defaultValues: { countryCode: '' },
+		defaultValues: { countryCode: '', currency: false, languages: false },
 	});
 
 	const timeoutRef = useRef<NodeJS.Timeout | null>(null);
 
-	function onSubmit(values: { countryCode: string }) {
+	function onSubmit(values: {
+		countryCode: string;
+		currency: boolean;
+		languages: boolean;
+	}) {
 		console.log('Submitted:', values);
 
-		async function fetchCountryData(countryCode: string) {
+		async function fetchCountryData(data: {
+			countryCode: string;
+			currency: boolean;
+			languages: boolean;
+		}) {
 			try {
-				console.log(`Fetching data for country code: ${countryCode}...`);
+				console.log(`Fetching data for country code: ${data.countryCode}...`);
 
 				const response = await fetch('http://127.0.0.1:8000/api/countryinfo', {
 					method: 'POST',
 					headers: { 'Content-Type': 'application/json' },
-					body: JSON.stringify({ countryCode }),
+					body: JSON.stringify(data),
 				});
 
 				if (!response.ok) {
+					console.error('Error fetching data:', response.statusText);
 					return;
-					// throw new Error(`Error fetching data: ${response.statusText}`);
 				}
 
-				const data = await response.json();
-				console.log('Fetched Country Data:', data);
-				setDisplayedCountry(data);
+				const fetchedData = await response.json();
+				console.log('Fetched Country Data:', fetchedData);
+				setDisplayedCountry(fetchedData);
 			} catch (error) {
 				console.error('Error fetching country data:', error);
 			}
 		}
 
-		// Call the function with the correct country code
-		fetchCountryData(values.countryCode);
+		// Call the function with the form values
+		fetchCountryData(values);
 	}
 
 	useEffect(() => {
-		// Watch the 'name' field and trigger onSubmit after 1 second delay
+		// Watch the form fields and trigger onSubmit after 1 second delay
 		const subscription = form.watch((value) => {
-			if (timeoutRef.current) clearTimeout(timeoutRef.current); // Clear the previous timer
+			if (timeoutRef.current) clearTimeout(timeoutRef.current);
 			timeoutRef.current = setTimeout(() => {
 				form.handleSubmit(onSubmit)();
-			}, 1000); // 1-second debounce
+			}, 1000);
 		});
 
 		return () => subscription.unsubscribe(); // Cleanup on unmount
@@ -74,7 +87,7 @@ export default function CountryForm(props) {
 	return (
 		<Form {...form}>
 			<form className='space-y-4'>
-				{/* Form Field */}
+				{/* Country Code Input */}
 				<FormField
 					control={form.control}
 					name='countryCode'
@@ -82,14 +95,57 @@ export default function CountryForm(props) {
 						<FormItem>
 							<FormControl>
 								<Input
+									style={{ textTransform: 'uppercase' }}
 									placeholder='Enter Country Code'
 									{...field}
 									onChange={(e) => {
-										field.onChange(e); // Sync with React Hook Form
+										field.onChange(e);
 									}}
 								/>
 							</FormControl>
 							<FormMessage />
+						</FormItem>
+					)}
+				/>
+
+				{/* Currency Checkbox */}
+				<FormField
+					control={form.control}
+					name='currency'
+					render={({ field }) => (
+						<FormItem>
+							<FormControl>
+								<label htmlFor='currency-checkbox'>
+									<input
+										type='checkbox'
+										id='currency-checkbox'
+										checked={field.value}
+										onChange={(e) => field.onChange(e.target.checked)}
+									/>
+									&nbsp; Show Currency
+								</label>
+							</FormControl>
+						</FormItem>
+					)}
+				/>
+
+				{/* Languages Checkbox */}
+				<FormField
+					control={form.control}
+					name='languages'
+					render={({ field }) => (
+						<FormItem>
+							<FormControl>
+								<label htmlFor='languages-checkbox'>
+									<input
+										type='checkbox'
+										id='languages-checkbox'
+										checked={field.value}
+										onChange={(e) => field.onChange(e.target.checked)}
+									/>
+									&nbsp; Show Languages
+								</label>
+							</FormControl>
 						</FormItem>
 					)}
 				/>

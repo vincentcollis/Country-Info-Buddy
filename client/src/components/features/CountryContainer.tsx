@@ -31,13 +31,17 @@ function CountryContainer() {
 						<strong> Native Name: </strong>
 						{displayedCountry.data.country.native}
 					</p>
-					<p>
-						<strong> Currency: </strong>
-						{displayedCountry.data.country.currency}
-					</p>
-					<p>
-						<strong> Languages: </strong> {languages.join(', ')}
-					</p>
+					{displayedCountry.data.country.currency && (
+						<p>
+							<strong> Currency: </strong> &nbsp;
+							{displayedCountry.data.country.currency}
+						</p>
+					)}
+					{languages.length > 0 && (
+						<p>
+							<strong> Languages: </strong> {languages.join(', ')}
+						</p>
+					)}
 				</div>
 			)}
 		</>
