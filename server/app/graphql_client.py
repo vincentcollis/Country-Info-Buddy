@@ -11,9 +11,11 @@ def execute_graphql_query(query: str) -> dict:
 
     # Check cache first
     if cached_data := cache.get(cache_key):
+        print("Cached data found! Returning data...")
         return json.loads(cached_data)
 
     try:
+        print("No cache data found. Executing query...")
         response = requests.post(
             GRAPHQL_API_URL,
             json={"query": query},
